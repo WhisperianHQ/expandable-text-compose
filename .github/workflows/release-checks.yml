@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  release:
+    types: [published, prereleased]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralUsername }}
+      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralPassword }}
+      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyId }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyPassword }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: ./gradlew --no-daemon --stacktrace build
+
+      - name: Publish to Maven Local (verify artifacts)
+        run: |
+          ./gradlew --no-daemon --stacktrace publishToMavenLocal
+          VERSION="$(grep '^VERSION_NAME=' gradle.properties | cut -d= -f2)"
+          GROUP_PATH="app/whisperian/expandable-text-compose"
+          ARTIFACT_DIR="$HOME/.m2/repository/${GROUP_PATH}/${VERSION}"
+          echo "Checking artifacts in ${ARTIFACT_DIR}"
+          test -d "${ARTIFACT_DIR}"
+          ls -la "${ARTIFACT_DIR}"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.jar"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-sources.jar"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-javadoc.jar"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.aar"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.pom"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.aar.asc"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-sources.jar.asc"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-javadoc.jar.asc"
+
+      - name: Publish to Maven Central
+        if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
+        run: ./gradlew --no-daemon --stacktrace publishToMavenCentral
