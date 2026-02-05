@@ -14,8 +14,6 @@ jobs:
     env:
       ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralUsername }}
       ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralPassword }}
-      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
-      ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyId }}
       ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyPassword }}
     steps:
       - name: Checkout
@@ -33,6 +31,34 @@ jobs:
       - name: Build
         run: ./gradlew --no-daemon --stacktrace build
 
+      - name: Prepare signing key (in-memory)
+        shell: bash
+        env:
+          SIGNING_KEY_ASC_BASE64: ${{ secrets.SIGNING_KEY_ASC_BASE64 }}
+          SIGNING_KEY_ASC: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
+          SIGNING_KEY_ID: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyId }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${SIGNING_KEY_ASC_BASE64:-}" ]]; then
+            printf '%s' "${SIGNING_KEY_ASC_BASE64}" | base64 --decode > signing.asc
+            echo "ORG_GRADLE_PROJECT_signingInMemoryKey<<EOF" >> "$GITHUB_ENV"
+            cat signing.asc >> "$GITHUB_ENV"
+            echo "EOF" >> "$GITHUB_ENV"
+          elif [[ -n "${SIGNING_KEY_ASC:-}" ]]; then
+            echo "ORG_GRADLE_PROJECT_signingInMemoryKey<<EOF" >> "$GITHUB_ENV"
+            printf '%s\n' "${SIGNING_KEY_ASC}" >> "$GITHUB_ENV"
+            echo "EOF" >> "$GITHUB_ENV"
+          else
+            echo "Missing signing key. Set either SIGNING_KEY_ASC_BASE64 (recommended) or ORG_GRADLE_PROJECT_signingInMemoryKey." >&2
+            exit 1
+          fi
+
+          # Optional: only needed if you must force a specific signing key/subkey.
+          if [[ -n "${SIGNING_KEY_ID:-}" ]]; then
+            echo "ORG_GRADLE_PROJECT_signingInMemoryKeyId=${SIGNING_KEY_ID}" >> "$GITHUB_ENV"
+          fi
+
       - name: Publish to Maven Local (verify artifacts)
         run: |
           ./gradlew --no-daemon --stacktrace publishToMavenLocal
@@ -42,12 +68,12 @@ jobs:
           echo "Checking artifacts in ${ARTIFACT_DIR}"
           test -d "${ARTIFACT_DIR}"
           ls -la "${ARTIFACT_DIR}"
-          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.jar"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-sources.jar"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-javadoc.jar"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.aar"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.pom"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.aar.asc"
+          test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}.pom.asc"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-sources.jar.asc"
           test -f "${ARTIFACT_DIR}/expandable-text-compose-${VERSION}-javadoc.jar.asc"
 
