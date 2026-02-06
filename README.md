@@ -7,7 +7,7 @@ An unopinionated wrapper over the Jetpack Compose Text composable that provides 
 > [!WARNING]
 > This package was developed mostly with AI, but has been tested across a lot of edge cases.
 
-<video src="https://github.com/user-attachments/assets/70893789-4a05-4891-98bd-bf95782061d5" controls muted playsinline loop></video>
+<video src="https://github.com/user-attachments/assets/9400c445-451a-4794-baae-f951e3269de4" controls muted playsinline loop></video>
 
 ## Why this library exists
 
