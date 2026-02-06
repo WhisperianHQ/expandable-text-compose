@@ -5,7 +5,7 @@
 An unopinionated wrapper over the Jetpack Compose Text composable that provides animated text expansion and collapse when `maxLines` changes.
 
 > [!WARNING]
-> This package was developed mostly with AI, but has been tested across a lot of edge cases.
+> This library was made mostly with AI. We tested it for most use cases and used multiple AI models to write and verify tests, but can't guarantee it has no bugs.
 
 <video src="https://github.com/user-attachments/assets/9400c445-451a-4794-baae-f951e3269de4" controls muted playsinline loop></video>
 
@@ -28,7 +28,7 @@ Add the dependency to your app's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("app.whisperian:expandable-text-compose:0.1.0")
+    implementation("app.whisperian:expandable-text-compose:0.2.0")
 }
 ```
 

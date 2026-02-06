@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="Watch the showcase video">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#121A2B"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="240" y="180" width="800" height="360" rx="28" fill="#0F172A" stroke="#26324B" stroke-width="2"/>
+    <circle cx="640" cy="360" r="86" fill="#1D4ED8"/>
+    <path d="M 615 318 L 615 402 L 685 360 Z" fill="#FFFFFF"/>
+  </g>
+
+  <text x="640" y="585" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="42" fill="#E5E7EB">
+    Watch the showcase video
+  </text>
+  <text x="640" y="632" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="24" fill="#94A3B8">
+    Click to open the MP4
+  </text>
+</svg>
