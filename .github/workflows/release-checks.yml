@@ -37,7 +37,6 @@ jobs:
         env:
           SIGNING_KEY_ASC_BASE64: ${{ secrets.SIGNING_KEY_ASC_BASE64 }}
           SIGNING_KEY_ASC: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
-          SIGNING_KEY_ID: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }}
         run: |
           set -euo pipefail
 
@@ -53,11 +52,6 @@ jobs:
           else
             echo "Missing signing key. Set either SIGNING_KEY_ASC_BASE64 (recommended) or ORG_GRADLE_PROJECT_signingInMemoryKey." >&2
             exit 1
-          fi
-
-          # Optional: only needed if you must force a specific signing key/subkey.
-          if [[ -n "${SIGNING_KEY_ID:-}" ]]; then
-            echo "ORG_GRADLE_PROJECT_signingInMemoryKeyId=${SIGNING_KEY_ID}" >> "$GITHUB_ENV"
           fi
 
       - name: Publish to Maven Local (verify artifacts)
