@@ -4,11 +4,11 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  ./scripts/release.sh <version> [--no-checks] [--no-gh] [--notes-file <path>]
+  ./scripts/release.sh <version> [--no-gh] [--notes-file <path>]
 
 What it does:
   - Updates VERSION_NAME in gradle.properties
-  - Runs ./gradlew build (unless --no-checks)
+  - Runs ./gradlew build + connectedDebugAndroidTest
   - Commits + tags v<version> + pushes
   - Creates a GitHub Release with gh (unless --no-gh), using CHANGELOG.md notes by default
 
@@ -27,12 +27,10 @@ fi
 version="$1"
 shift
 
-run_checks=true
 run_gh=true
 notes_file=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --no-checks) run_checks=false ;;
     --no-gh) run_gh=false ;;
     --notes-file)
       shift
@@ -94,9 +92,7 @@ fi
 
 perl -0777 -i -pe "s/^VERSION_NAME=.*\$/VERSION_NAME=${version}/m" gradle.properties
 
-if $run_checks; then
-  ./gradlew --no-daemon --stacktrace build
-fi
+./gradlew --no-daemon --stacktrace build connectedDebugAndroidTest
 
 git add gradle.properties
 git commit -m "chore: release ${tag}"
