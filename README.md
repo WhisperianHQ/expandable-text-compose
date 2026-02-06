@@ -7,6 +7,8 @@ An unopinionated wrapper over the Jetpack Compose Text composable that provides 
 > [!WARNING]
 > This package was developed mostly with AI, but has been tested across a lot of edge cases.
 
+<video src="Showcase.mp4" controls width="100%"></video>
+
 ## Why this library exists
 
 We needed a way to smoothly animate expanding/collapsing text. The only working library we found used M2 and was too opinionated. It hard-coded Material 2 `Text` and appended a "read more" string inside the text. So we built this minimal, unopinionated alternative.
