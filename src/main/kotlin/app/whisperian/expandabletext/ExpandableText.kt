@@ -1,4 +1,4 @@
-package com.mishi.expandabletext
+package app.whisperian.expandabletext
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.Spring

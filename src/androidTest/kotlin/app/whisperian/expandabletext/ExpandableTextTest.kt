@@ -1,4 +1,4 @@
-package com.mishi.expandabletext
+package app.whisperian.expandabletext
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

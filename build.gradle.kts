@@ -11,7 +11,7 @@ group = property("GROUP").toString()
 version = property("VERSION_NAME").toString()
 
 android {
-    namespace = "com.mishi.expandabletext"
+    namespace = "app.whisperian.expandabletext"
     resourcePrefix = "expandable_text_"
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
 
