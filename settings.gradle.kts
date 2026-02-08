@@ -20,3 +20,5 @@ rootProject.name = "expandable-text-compose"
 // It's harmless here and keeps our build aligned with that convention.
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+include(":sample")
+include(":benchmark")
